@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const ESearchStatus = {
   "IDLE": 'idle',
@@ -21,32 +21,44 @@ const useSearchBox = () => {
   const [results, setResults] = useState<ISearchResult[]>([]);
   const idLastEvent = useRef<number>(0);
 
+  useEffect(() => {
+    if(searchStatus === ESearchStatus.ERROR) {
+      const timeout = setTimeout(() => {
+        setSearchStatus(ESearchStatus.IDLE);
+      }, 2500);
+      return () => clearTimeout(timeout);
+    }
+
+  }, [searchStatus]);
+
   const getAPI = async (query: string) => {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`)
-    .catch(() => {
-        return {
-            results: [],
-            error: true
-        }
-    })
-    const data = await response.json();
-    return data;
+    try{
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`)
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      return {
+        error: true
+      }
+    }
   }
 
   const search = async (query: string) => {
-    if(searchStatus === ESearchStatus.LOADING || !query || query.trim() === '') return;
+    if(searchStatus === ESearchStatus.LOADING) return;
+    if(!query || query.trim() === '') {
+      setSearchStatus(ESearchStatus.ERROR);
+      return;
+    }
     setSearchStatus(ESearchStatus.LOADING);
-    const current = idLastEvent.current++;
+    const current = ++idLastEvent.current;
 
     setTimeout(async () => {
       if(current !== idLastEvent.current) return;
+
       const data = await getAPI(query);
+      console.log('Data: ', data);
       if(data.error) {
-        setSearchStatus(ESearchStatus.ERROR);
-        setResults([]);
-        return;
-      }
-      if (!data.id) {
         setSearchStatus(ESearchStatus.ERROR);
         setResults([]);
         return;
@@ -66,7 +78,8 @@ const useSearchBox = () => {
     isLoading: searchStatus === ESearchStatus.LOADING,
     isSuccess: searchStatus === ESearchStatus.SUCCESS,
     isError: searchStatus === ESearchStatus.ERROR,
-    results
+    results,
+    search,
   }
 }
 

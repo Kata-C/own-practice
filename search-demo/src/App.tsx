@@ -1,14 +1,16 @@
 import './App.css'
 import  SearchBox from './components/SearchBox'
+import  ResultsBox from './components/ResultsBox'
 
 function App() {
 
   return (
-    <>
-      <h1>Search Demo</h1>
+    <div className='app-container'>
+      <h1>Poke Search Demo</h1>
       <br />
-      <SearchBox />
-    </>
+        <SearchBox />
+        <ResultsBox />
+    </div>
   )
 }
 

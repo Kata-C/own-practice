@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import '../styles/SearchBox.css'
+import useSearchBox from '../hooks/useSearchBox';
 
 const SearchBox = () => {
     const [value, setValue] = useState('');
+    const { search } = useSearchBox();
   return (
     <div className="search-box-container">
       <input 
@@ -12,7 +14,12 @@ const SearchBox = () => {
         placeholder="Search..." 
         value={value}
       />
-      <button>Search</button>
+      <button 
+        onClick={() => search(value)}
+      >
+        Search
+      </button>
+      
     </div>
   );
 }
