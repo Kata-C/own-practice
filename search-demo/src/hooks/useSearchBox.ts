@@ -18,7 +18,7 @@ type ESearchStatus = (typeof ESearchStatus)[keyof typeof ESearchStatus];
 
 const useSearchBox = () => {
   const [searchStatus, setSearchStatus] = useState<ESearchStatus>(ESearchStatus.IDLE);
-  const [results, setResults] = useState<ISearchResult[]>([]);
+  const [results, setResults] = useState<ISearchResult | null>(null);
   const idLastEvent = useRef<number>(0);
 
   useEffect(() => {
@@ -59,16 +59,17 @@ const useSearchBox = () => {
       const data = await getAPI(query);
       console.log('Data: ', data);
       if(data.error) {
+        console.log('Entra error: ', data.error);
         setSearchStatus(ESearchStatus.ERROR);
-        setResults([]);
+        setResults(null);
         return;
       }
-      setResults([{
+      setResults({
         id: data.id,
         name: data.name,
         type: data.types[0].type.name,
         image: data.sprites.other['official-artwork'].front_default,
-      }]);
+      });
       setSearchStatus(ESearchStatus.SUCCESS);
     }, 1500);
 

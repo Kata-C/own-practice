@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import '../styles/SearchBox.css'
-import useSearchBox from '../hooks/useSearchBox';
+// import useSearchBox from '../hooks/useSearchBox';
+import { ResultsContext } from '../context/ResultsContext';
 
 const SearchBox = () => {
     const [value, setValue] = useState('');
-    const { search } = useSearchBox();
+    const { search } = useContext(ResultsContext);
   return (
     <div className="search-box-container">
       <input 
