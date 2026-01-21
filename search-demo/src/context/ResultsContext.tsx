@@ -24,7 +24,7 @@ export const ResultsProvider = ({children}: {children: React.ReactNode}) => {
     }, [results]);
 
     return (
-        <ResultsContext value={{
+        <ResultsContext.Provider value={{
             results,
             isLoading,
             isSuccess,
@@ -32,7 +32,7 @@ export const ResultsProvider = ({children}: {children: React.ReactNode}) => {
             search,
         }}>
             {children}
-        </ResultsContext>
+        </ResultsContext.Provider>
     )
 
 }
